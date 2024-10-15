@@ -51,7 +51,6 @@ display(average_monthly_rental_prices)
 display(homes_started)
 display(homes_finished)
 
-
 # COMMAND ----------
 
 # MAGIC %md
