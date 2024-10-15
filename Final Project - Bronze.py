@@ -28,6 +28,7 @@ import pandas as pd
 
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType, StructField, ArrayType, StringType, IntegerType
+from pyspark.sql.functions import arrays_zip, col, explode, map_keys, map_values
 from databricks_helpers.databricks_helpers import DataDerpDatabricksHelpers
 
 # COMMAND ----------
@@ -74,6 +75,29 @@ average_monthly_rental_prices = create_rent_values_dataframe(
 )
 
 display(average_monthly_rental_prices)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Read Barcelona Neighborhoods
+
+# COMMAND ----------
+
+def create_barcelona_neighborhoods_dataframe(data):
+    return spark.createDataFrame([(data['Àmbits'])])\
+        .select(map_keys('107').alias('key'), map_values('107').alias('value'))\
+        .withColumn('zip', arrays_zip('key', 'value'))\
+        .withColumn('zip', explode('zip'))\
+        .withColumn('code', col('zip.key'))\
+        .withColumn('name', col('zip.value'))\
+        .drop('key', 'value', 'zip')
+
+barcelona_neighborhoods = create_barcelona_neighborhoods_dataframe(
+    load_json(
+        'https://iermbdb.uab.cat/datasets2/index.php?token=AGEF894MGIE0220GOLLEOF&id_ind=1660&type=json'
+    )
+)
+display(barcelona_neighborhoods)
 
 # COMMAND ----------
 
@@ -130,15 +154,16 @@ display(homes_finished)
 
 def write(name: str, input_df: DataFrame):
     out_dir = f"{working_directory}/output/{name}"
-    mode_name = "overwrite"
+    mode_name = 'overwrite'
     input_df\
         .write\
         .mode(mode_name)\
         .parquet(out_dir)
     
-write("average_monthly_rental_prices", average_monthly_rental_prices)
-write("homes_started", homes_started)
-write("homes_finished", homes_finished)
+write('average_monthly_rental_prices', average_monthly_rental_prices)
+write('barcelona_neighborhoods', barcelona_neighborhoods)
+write('homes_started', homes_started)
+write('homes_finished', homes_finished)
 
 # COMMAND ----------
 
