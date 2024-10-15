@@ -16,7 +16,7 @@
 
 # Dependencies setup
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, sum, count
 
 from databricks_helpers.databricks_helpers import DataDerpDatabricksHelpers
 
@@ -70,7 +70,7 @@ def create_barcelona_avg_monthly_rental_prices(average_monthly_rental_prices):
         .withColumn('amount', col('amount').cast('double'))\
         .join(barcelona_neighborhoods, barcelona_neighborhoods.code == average_monthly_rental_prices.inner_scope)\
         .withColumnRenamed('name', 'neighborhood')\
-        .drop('outer_scope', 'inner_scope', 'code')
+        .drop('outer_scope', 'inner_scope', 'trimester', 'code')
 
 barcelona_avg_monthly_rental_prices = create_barcelona_avg_monthly_rental_prices(average_monthly_rental_prices)
 display(barcelona_avg_monthly_rental_prices)
@@ -84,11 +84,33 @@ display(barcelona_avg_monthly_rental_prices)
 
 # "105" is the code for cities in Catalonia
 # "8019" is the code for Barcelona
-# TODO: Some years are pending the annual aggregated value, we have to calculate it ourselves
-def create_barcelona_homes_started(homes_started):
-    return homes_started\
+def create_barcelona_homes_dataset(dataset):
+    homes_in_barcelona = dataset\
         .filter(col('outer_scope') == '105')\
-        .filter(col('inner_scope') == '8019')
+        .filter(col('inner_scope') == '8019')\
+        .withColumn('year', col('year').cast('int'))\
+        .withColumn('quantity', col('quantity').cast('int'))
+
+    existing_yearly_agg_entries = homes_in_barcelona\
+        .filter(col('trimester') == '-1')\
+        .drop('outer_scope', 'inner_scope', 'trimester')
+
+    trimester_agg_entries = homes_in_barcelona\
+        .filter(col('trimester') != '-1')
+    
+    computed_yearly_agg_entries = trimester_agg_entries\
+        .groupBy('year')\
+        .agg(sum('quantity').alias('quantity'))
+
+    return existing_yearly_agg_entries\
+        .union(computed_yearly_agg_entries)\
+        .dropDuplicates()\
+        .sort('year')
+
+# COMMAND ----------
+
+def create_barcelona_homes_started(homes_started):
+    return create_barcelona_homes_dataset(homes_started)
 
 barcelona_homes_started = create_barcelona_homes_started(homes_started)
 display(barcelona_homes_started)
@@ -102,11 +124,31 @@ display(barcelona_homes_started)
 
 # "105" is the code for cities in Catalonia
 # "8019" is the code for Barcelona
-# TODO: Some years are pending the annual aggregated value, we have to calculate it ourselves
 def create_barcelona_homes_finished(homes_finished):
-    return homes_finished\
-        .filter(col('outer_scope') == '105')\
-        .filter(col('inner_scope') == '8019')
+    return create_barcelona_homes_dataset(homes_finished)
 
 barcelona_homes_finished = create_barcelona_homes_finished(homes_finished)
 display(barcelona_homes_finished)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Write to Parquet
+
+# COMMAND ----------
+
+def write(name: str, input_df: DataFrame):
+    out_dir = f"{working_directory}/output/{name}"
+    mode_name = 'overwrite'
+    input_df\
+        .write\
+        .mode(mode_name)\
+        .parquet(out_dir)
+
+write('barcelona_avg_monthly_rental_prices', barcelona_avg_monthly_rental_prices)
+write('barcelona_homes_started', barcelona_homes_started)
+write('barcelona_homes_finished', barcelona_homes_finished)
+
+# COMMAND ----------
+
+dbutils.fs.ls(f"{working_directory}/output/")
