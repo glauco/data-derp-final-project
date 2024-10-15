@@ -16,7 +16,7 @@
 
 # Dependencies setup
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, sum, count
+from pyspark.sql.functions import col, sum, count, avg
 
 from databricks_helpers.databricks_helpers import DataDerpDatabricksHelpers
 
@@ -58,18 +58,17 @@ display(homes_finished)
 
 # COMMAND ----------
 
-# "107" is the code for Barcelona neighborhoods
-# "-1" is the annual average price
+# "105" is the code for cities in Catalonia
+# "8019" is the code for Barcelona
 def create_barcelona_avg_monthly_rental_prices(average_monthly_rental_prices):
     return average_monthly_rental_prices\
-        .filter(col('outer_scope') == '107')\
+        .filter(col('outer_scope') == '105')\
+        .filter(col('inner_scope') == '8019')\
         .filter(col('trimester') == '-1')\
         .withColumn('year', col('year').cast('int'))\
-        .withColumn('trimester', col('trimester').cast('int'))\
         .withColumn('amount', col('amount').cast('double'))\
-        .join(barcelona_neighborhoods, barcelona_neighborhoods.code == average_monthly_rental_prices.inner_scope)\
         .withColumnRenamed('name', 'neighborhood')\
-        .drop('outer_scope', 'inner_scope', 'trimester', 'code')
+        .drop('outer_scope', 'inner_scope', 'trimester')
 
 barcelona_avg_monthly_rental_prices = create_barcelona_avg_monthly_rental_prices(average_monthly_rental_prices)
 display(barcelona_avg_monthly_rental_prices)

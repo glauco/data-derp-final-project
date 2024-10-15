@@ -91,5 +91,4 @@ plt.show()
 
 # COMMAND ----------
 
-houses_finished_since_2013 = barcelona_homes_finished.filter(col('year') >= 2013).toPandas()
-rental_prices.amount.corr(houses_finished_since_2013.quantity)
+rental_prices.amount.corr(homes_finished.quantity)
