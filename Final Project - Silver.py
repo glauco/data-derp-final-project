@@ -46,10 +46,12 @@ average_monthly_rental_prices = read_parquet(f"{working_directory}/output/averag
 barcelona_neighborhoods = read_parquet(f"{working_directory}/output/barcelona_neighborhoods/")
 homes_started = read_parquet(f"{working_directory}/output/homes_started/")
 homes_finished = read_parquet(f"{working_directory}/output/homes_finished/")
+spain_consumer_index = read_parquet(f"{working_directory}/output/spain_consumer_index")
 
 display(average_monthly_rental_prices)
 display(homes_started)
 display(homes_finished)
+display(spain_consumer_index)
 
 # COMMAND ----------
 
@@ -131,6 +133,23 @@ display(barcelona_homes_finished)
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC # Process Spain Consumer Index
+
+# COMMAND ----------
+
+def create_spain_consumer_index(dataset):
+    return dataset\
+        .withColumn('year', col('year').cast('int'))\
+        .withColumn('month', col('month').cast('int'))\
+        .withColumn('value', col('value').cast('double'))\
+        .sort('year', 'month')
+
+spain_consumer_index = create_spain_consumer_index(spain_consumer_index)
+display(spain_consumer_index)
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC # Write to Parquet
 
 # COMMAND ----------
@@ -146,6 +165,7 @@ def write(name: str, input_df: DataFrame):
 write('barcelona_avg_monthly_rental_prices', barcelona_avg_monthly_rental_prices)
 write('barcelona_homes_started', barcelona_homes_started)
 write('barcelona_homes_finished', barcelona_homes_finished)
+write('spain_consumer_index', spain_consumer_index)
 
 # COMMAND ----------
 

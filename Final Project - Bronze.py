@@ -148,6 +148,30 @@ display(homes_finished)
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ## Read Spain Consumer Index
+
+# COMMAND ----------
+
+def create_spain_consumer_index_dataframe(data):
+    return spark.createDataFrame(data['Data'])\
+        .withColumnRenamed('Anyo', 'year')\
+        .withColumnRenamed('FK_Periodo', 'month')\
+        .withColumnRenamed('FK_TipoDato', 'type')\
+        .withColumnRenamed('Fecha', 'date')\
+        .withColumnRenamed('Secreto', 'secret')\
+        .withColumnRenamed('Valor', 'value')\
+        .withColumnRenamed('Notas', 'notes')\
+        .drop('type', 'date', 'secret', 'notes')
+
+spain_consumer_index = create_spain_consumer_index_dataframe(
+    load_json('https://servicios.ine.es/wstempus/js/EN/DATOS_SERIE/IPC206448?nult=384')
+)
+
+display(spain_consumer_index)
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## Write to Parquet
 
 # COMMAND ----------
@@ -164,6 +188,7 @@ write('average_monthly_rental_prices', average_monthly_rental_prices)
 write('barcelona_neighborhoods', barcelona_neighborhoods)
 write('homes_started', homes_started)
 write('homes_finished', homes_finished)
+write('spain_consumer_index', spain_consumer_index)
 
 # COMMAND ----------
 

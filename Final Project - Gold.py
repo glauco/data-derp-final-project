@@ -49,10 +49,12 @@ def read_parquet(filepath: str) -> DataFrame:
 barcelona_avg_monthly_rental_prices = read_parquet(f"{working_directory}/output/barcelona_avg_monthly_rental_prices/")
 barcelona_homes_started = read_parquet(f"{working_directory}/output/barcelona_homes_started/")
 barcelona_homes_finished = read_parquet(f"{working_directory}/output/barcelona_homes_finished/")
+spain_consumer_index = read_parquet(f"{working_directory}/output/spain_consumer_index/")
 
 display(barcelona_avg_monthly_rental_prices)
 display(barcelona_homes_started)
 display(barcelona_homes_finished)
+display(spain_consumer_index)
 
 # COMMAND ----------
 
@@ -92,3 +94,23 @@ plt.show()
 # COMMAND ----------
 
 rental_prices.amount.corr(homes_finished.quantity)
+
+# COMMAND ----------
+
+consumer_index = spain_consumer_index\
+    .filter(col('month') == 12)\
+    .sort(col('year'))\
+    .toPandas()
+
+display(consumer_index)
+
+plt.plot(consumer_index.year, consumer_index.value, label='Consumer Index')
+plt.xlabel("Year") 
+plt.ylabel("Consumer Index") 
+plt.title("Spain Consumer Index") 
+plt.legend()
+plt.show() 
+
+# COMMAND ----------
+
+rental_prices.amount.corr(consumer_index.value)
