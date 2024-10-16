@@ -102,7 +102,7 @@ rental_prices = barcelona_avg_monthly_rental_prices.groupBy('year')\
         .toPandas()
 
 plt.figure(figsize=(15, 5))
-plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price')
+plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price', color="#003f5c")
 plt.xticks(range(2005,2025, 2))
 
 plt.xlabel("Year")
@@ -122,8 +122,8 @@ plt.show()
 homes_finished_filtered_by_common_years = barcelona_homes_finished.filter(col('year') >= 2005).toPandas()
 
 plt.figure(figsize=(15, 5))
-plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price')
-plt.plot(homes_finished_filtered_by_common_years.year, homes_finished_filtered_by_common_years.quantity, label='Homes Finished')
+plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price', color="#003f5c")
+plt.plot(homes_finished_filtered_by_common_years.year, homes_finished_filtered_by_common_years.quantity, label='Homes Finished', color="#ff6361")
 plt.xticks(range(2005,2025, 1))
 
 plt.xlabel("Year")
@@ -149,7 +149,7 @@ consumer_index = spain_consumer_index\
 display(consumer_index)
 
 plt.figure(figsize=(15, 5))
-plt.plot(consumer_index.year, consumer_index.value, label='Consumer Index')
+plt.plot(consumer_index.year, consumer_index.value, label='Consumer Index', color="#003f5c")
 plt.xlabel("Year") 
 plt.ylabel("Consumer Index") 
 plt.title("Spain Consumer Index") 
@@ -186,10 +186,13 @@ display(adjusted_rental_prices)
 
 # COMMAND ----------
 
-adjusted_rental_prices = adjusted_rental_prices.toPandas()
+year_column = adjusted_rental_prices.toPandas().year
+rental_prices_column = adjusted_rental_prices.toPandas().amount
+inflated_prices_column = adjusted_rental_prices.toPandas().adjusted_price
+
 plt.figure(figsize=(15, 5))
-plt.plot(adjusted_rental_prices.year, adjusted_rental_prices.amount, label='Rental Price')
-plt.plot(adjusted_rental_prices.year, adjusted_rental_prices.adjusted_price, label='Inflated Rental Price')
+plt.plot(year_column, rental_prices_column, label='Rental Price', color="#003f5c")
+plt.plot(year_column, inflated_prices_column, label='Inflated Rental Price', color="#ff6361")
 plt.xticks(range(2005,2025, 1))
 
 plt.xlabel("Year")
