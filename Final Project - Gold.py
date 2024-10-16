@@ -111,6 +111,15 @@ plt.annotate('2007-2008 Financial Crisis',
                             ec="none",
                             connectionstyle="angle3,angleA=0,angleB=-90"),
             horizontalalignment='right', verticalalignment='top')
+plt.annotate('2020-2022 Pandemic',
+            xy=(2020, 2000), xycoords='data',
+            xytext=(0.85, 0.65), textcoords='axes fraction',
+            arrowprops=dict(arrowstyle="fancy",
+                            facecolor='#000000',
+                            fc="0.6",
+                            ec="none",
+                            connectionstyle="angle3,angleA=0,angleB=-90"),
+            horizontalalignment='right', verticalalignment='top')
 plt.axhline(y=avg_homes_finished_before_crisis, label='Average number of homes built before 2007', color='#000000', linestyle='dotted')
 plt.axhline(y=avg_homes_finished_after_crisis, label='Average number of homes built after 2007', color='#000000', linestyle='dashed')
 plt.legend()
@@ -138,9 +147,27 @@ plt.ylabel("Price (€)")
 plt.title("Average Monthly Price (€)")
 
 # Data
-plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price', color="#003f5c")
+plt.plot(rental_prices.year, rental_prices.amount, label='Average Monthly Rental Price', color="#003f5c")
 
 # Annotations
+plt.annotate('2007-2008 Financial Crisis',
+            xy=(2007, 800), xycoords='data',
+            xytext=(0.35, 0.80), textcoords='axes fraction',
+            arrowprops=dict(arrowstyle="fancy",
+                            facecolor='#000000',
+                            fc="0.6",
+                            ec="none",
+                            connectionstyle="angle3,angleA=0,angleB=-90"),
+            horizontalalignment='right', verticalalignment='top')
+plt.annotate('2020-2022 Pandemic',
+            xy=(2020, 900), xycoords='data',
+            xytext=(0.85, 0.55), textcoords='axes fraction',
+            arrowprops=dict(arrowstyle="fancy",
+                            facecolor='#000000',
+                            fc="0.6",
+                            ec="none",
+                            connectionstyle="angle3,angleA=0,angleB=-90"),
+            horizontalalignment='right', verticalalignment='top')
 plt.legend()
 
 # Show
@@ -203,6 +230,24 @@ plt.title("Spain Consumer Index")
 plt.plot(consumer_index.year, consumer_index.value, label='Consumer Index', color="#003f5c")
 
 # Annotations
+plt.annotate('2007-2008 Financial Crisis',
+            xy=(2007, 5), xycoords='data',
+            xytext=(0.35, 0.80), textcoords='axes fraction',
+            arrowprops=dict(arrowstyle="fancy",
+                            facecolor='#000000',
+                            fc="0.6",
+                            ec="none",
+                            connectionstyle="angle3,angleA=0,angleB=-90"),
+            horizontalalignment='right', verticalalignment='top')
+plt.annotate('2020-2022 Pandemic',
+            xy=(2020, 3), xycoords='data',
+            xytext=(0.75, 0.75), textcoords='axes fraction',
+            arrowprops=dict(arrowstyle="fancy",
+                            facecolor='#000000',
+                            fc="0.6",
+                            ec="none",
+                            connectionstyle="angle3,angleA=0,angleB=-90"),
+            horizontalalignment='right', verticalalignment='top')
 plt.legend()
 
 # Show
@@ -244,6 +289,15 @@ plt.plot(year_column, inflated_prices_column, label='Inflated Rental Price', col
 plt.ylim(ymin=0, ymax=1200)
 
 # Annotations
+plt.annotate('Government Intervention',
+            xy=(2020, 800), xycoords='data',
+            xytext=(0.75, 0.35), textcoords='axes fraction',
+            arrowprops=dict(arrowstyle="fancy",
+                            facecolor='#000000',
+                            fc="0.6",
+                            ec="none",
+                            connectionstyle="angle3,angleA=0,angleB=-90"),
+            horizontalalignment='right', verticalalignment='top')
 plt.legend()
 
 # Show
@@ -258,13 +312,11 @@ plt.show()
 # MAGIC
 # MAGIC Several factors can possibly contribute to the rental prices increase but require further investigation:
 # MAGIC
-# MAGIC - Tourism and Short-term Rentals: The rise of platforms like Airbnb and other short-term rental services has significantly affected the housing market. Many properties were converted into vacation rentals, reducing the supply of long-term rental housing and driving prices up.
-# MAGIC - Urban Development and Gentrification: Several neighborhoods, especially in central areas like El Raval, Poble Sec, and Poblenou, have gone through processes of gentrification. As these areas became more desirable, rents increased to match the rising demand for housing in these newly "trendy" districts.
-# MAGIC - Economic Crises: The 2008 financial crisis initially led to a dip in property prices and rents, but recovery post-2013 saw a strong resurgence in demand, pushing prices higher. The COVID-19 pandemic caused temporary decreases, particularly in tourist-heavy areas, but rental prices have since rebounded.
-# MAGIC - Demand from Foreign Investors and Expats: Barcelona's international appeal, both as a tourist and a work destination, has attracted foreign investors and expatriates. This influx has added to the demand for rental properties, particularly in central and well-connected neighborhoods, raising prices.
-# MAGIC - Government Regulation and Rent Control: In recent years, local governments have introduced rent control measures, especially with the 2020 law aimed at capping rental prices in certain areas. These regulations had mixed effects, slowing the rise of rent in some places but also leading to a reduction in the supply of available rentals as some owners opted to sell or withdraw properties from the rental market.
-# MAGIC - Population Growth and Demographics: Barcelona has experienced a growing population, with a younger demographic, including students and young professionals, increasing the demand for rental housing.
-# MAGIC - Construction and Housing Supply: The rate of new housing construction in Barcelona has been relatively slow, especially compared to the demand. This limited supply of new apartments has contributed to the upward pressure on rental prices.
-# MAGIC - Public Transportation and Infrastructure Improvements: Improvements to Barcelona’s public transport and infrastructure, particularly in neighborhoods further from the center, have made them more accessible, increasing demand for rentals in those areas and subsequently pushing up rents.
+# MAGIC - **Tourism and Short-term Rentals:** The rise of platforms like Airbnb and other short-term rental services may significantly affect the housing market.
+# MAGIC - U**rban Development and Gentrification:** Several neighborhoods, especially in central areas like El Raval, Poble Sec, and Poblenou, have gone through processes of gentrification. As these areas became more desirable, rents increased to match the rising demand for housing in these newly "trendy" districts.
+# MAGIC - **Demand from Foreign Investors and Expats:** Barcelona's international appeal, both as a tourist and a work destination, has attracted foreign investors and expatriates. This influx may have added to the demand for rental properties, particularly in central and well-connected neighborhoods, raising prices.
+# MAGIC - **Government Regulation and Rent Control:** In recent years, local governments have introduced rent control measures, especially with the 2020 law aimed at capping rental prices in certain areas. These regulations had mixed effects, slowing the rise of rent in some places but also leading to a reduction in the supply of available rentals as some owners opted to sell or withdraw properties from the rental market.
+# MAGIC - **Population Growth and Demographics:** Barcelona has experienced a growing population, with a younger demographic, including students and young professionals, increasing the demand for rental housing.
+# MAGIC - **Public Transportation and Infrastructure Improvements:** Improvements to Barcelona’s public transport and infrastructure, particularly in neighborhoods further from the center, have made them more accessible, increasing demand for rentals in those areas and subsequently pushing up rents.
 # MAGIC
 # MAGIC These factors, combined, may have led to a steady increase in rental prices over time, making Barcelona one of the most expensive cities in Spain for housing.
