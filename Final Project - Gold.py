@@ -16,7 +16,8 @@
 
 # Dependencies setup
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, sum, avg
+from pyspark.sql.functions import col, sum, avg, lag
+from pyspark.sql.window import Window
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -154,3 +155,27 @@ plt.show()
 # COMMAND ----------
 
 rental_prices.amount.corr(consumer_index.value)
+
+# COMMAND ----------
+
+# get the first row of the barcelona_avg_monthly_rental_prices and then generate a new dataset with the adjusted rental prices multiplying them by the equivalent consumer index in spain_consumer_index
+
+# Define a window specification
+window_spec = Window.partitionBy().orderBy("x.year", "y.month")
+
+# Join the barcelona_avg_monthly_rental_prices with spain_consumer_index on year and month
+adjusted_rental_prices = barcelona_avg_monthly_rental_prices.alias("x").join(
+    spain_consumer_index.alias("y"),
+    (barcelona_avg_monthly_rental_prices.year == spain_consumer_index.year) &
+    (12 == spain_consumer_index.month)
+)\
+    .withColumn(
+        'adjusted_price',
+        lag(col('amount'), 1).over(window_spec) * (1 + (spain_consumer_index.value/100))
+    )\
+    .select(
+        barcelona_avg_monthly_rental_prices['*'],
+        'adjusted_price'
+    )
+
+display(adjusted_rental_prices)
