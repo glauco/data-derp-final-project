@@ -103,7 +103,7 @@ rental_prices = barcelona_avg_monthly_rental_prices.groupBy('year')\
 
 plt.figure(figsize=(15, 5))
 plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price')
-plt.xticks(range(2005,2025, 3))
+plt.xticks(range(2005,2025, 2))
 
 plt.xlabel("Year")
 plt.ylabel("Price (€)") 
@@ -115,7 +115,7 @@ plt.show()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC To be able to do a correlation between rental_prices and homes_finished we should first filter the dataframes by the same time interval or the correlation would not be realistic.
+# MAGIC To be able to do a correlation between `rental_prices` and `homes_finished` we should first filter the dataframes by the same time interval or the correlation would not be realistic.
 
 # COMMAND ----------
 
@@ -124,7 +124,7 @@ homes_finished_filtered_by_common_years = barcelona_homes_finished.filter(col('y
 plt.figure(figsize=(15, 5))
 plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price')
 plt.plot(homes_finished_filtered_by_common_years.year, homes_finished_filtered_by_common_years.quantity, label='Homes Finished')
-plt.xticks(range(2005,2025, 3))
+plt.xticks(range(2005,2025, 1))
 
 plt.xlabel("Year")
 plt.ylabel("Price (€)") 
@@ -133,6 +133,10 @@ plt.ylim(ymin=0)
 plt.legend()
 plt.show() 
 
+
+# COMMAND ----------
+
+homes_finished_filtered_by_common_years.quantity.corr(rental_prices.amount)
 
 # COMMAND ----------
 
@@ -179,3 +183,22 @@ adjusted_rental_prices = barcelona_avg_monthly_rental_prices.alias("x").join(
     )
 
 display(adjusted_rental_prices)
+
+# COMMAND ----------
+
+adjusted_rental_prices = adjusted_rental_prices.toPandas()
+plt.figure(figsize=(15, 5))
+plt.plot(adjusted_rental_prices.year, adjusted_rental_prices.amount, label='Rental Price')
+plt.plot(adjusted_rental_prices.year, adjusted_rental_prices.adjusted_price, label='Inflated Rental Price')
+plt.xticks(range(2005,2025, 1))
+
+plt.xlabel("Year")
+plt.ylabel("Price (€)") 
+plt.title("Average Monthly Price (€)")
+plt.ylim(ymin=0)
+plt.legend()
+plt.show() 
+
+# COMMAND ----------
+
+
