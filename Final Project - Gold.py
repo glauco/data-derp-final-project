@@ -63,11 +63,23 @@ display(spain_consumer_index)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Question 1: Is Barcelona building more or less houses?
+# MAGIC In order to answer this question, we are going to use the `barcelona_started` and `barcelona_finished` datasets and compare them using a Bar Plot where we will be able to identify the gaps throughout the years
+
+# COMMAND ----------
+
 homes_started = barcelona_homes_started.toPandas()
 homes_finished = barcelona_homes_finished.toPandas()
+width = 0.4
+average_home_started_before_crisis = barcelona_homes_started.filter(col('year') < 2008).agg(avg(col('quantity'))).head()[0]
+average_home_started_after_crisis = barcelona_homes_started.filter(col('year') > 2008).agg(avg(col('quantity'))).head()[0]
 
-plt.bar(homes_started.year, homes_started.quantity, label='Started')
-plt.bar(homes_finished.year, homes_finished.quantity, label='Finished')
+plt.figure(figsize=(15, 5))  # width:20, height:3
+plt.bar(homes_started.year, homes_started.quantity, width, label='Started', color='#003f5c')
+plt.bar(homes_finished.year + width, homes_finished.quantity, width, label='Finished', color='#ff6361')
+plt.axhline(y=average_home_started_before_crisis, color='black', linestyle='dotted', label='Average Homes Started Before 2008')
+plt.axhline(y=average_home_started_after_crisis, color='black', linestyle='dashed', label='Average Homes Started After 2008')
 
 plt.xlabel("Year") 
 plt.ylabel("Quantity of homes built") 
@@ -77,33 +89,61 @@ plt.show()
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Question 2: Are there any relationship between the amount of houses built and the rent price?
+# MAGIC In order to answer this question, we first plot a visualization to see the evolution of rental price throughout the years.
+
+# COMMAND ----------
+
 rental_prices = barcelona_avg_monthly_rental_prices.groupBy('year')\
         .agg(avg('amount').alias('amount'))\
         .sort(col('year'))\
         .toPandas()
 
+plt.figure(figsize=(15, 5))
 plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price')
+plt.xticks(range(2005,2025, 3))
 
 plt.xlabel("Year")
-plt.ylabel("Quantity of homes built") 
-plt.title("Number of homes built per year")
+plt.ylabel("Price (€)") 
+plt.title("Average Monthly Price (€)")
 plt.ylim(ymin=0)
 plt.legend()
 plt.show() 
 
 # COMMAND ----------
 
-rental_prices.amount.corr(homes_finished.quantity)
+# MAGIC %md
+# MAGIC To be able to do a correlation between rental_prices and homes_finished we should first filter the dataframes by the same time interval or the correlation would not be realistic.
+
+# COMMAND ----------
+
+homes_finished_filtered_by_common_years = barcelona_homes_finished.filter(col('year') >= 2005).toPandas()
+
+plt.figure(figsize=(15, 5))
+plt.plot(rental_prices.year, rental_prices.amount, label='Rental Price')
+plt.plot(homes_finished_filtered_by_common_years.year, homes_finished_filtered_by_common_years.quantity, label='Homes Finished')
+plt.xticks(range(2005,2025, 3))
+
+plt.xlabel("Year")
+plt.ylabel("Price (€)") 
+plt.title("Average Monthly Price (€)")
+plt.ylim(ymin=0)
+plt.legend()
+plt.show() 
+
 
 # COMMAND ----------
 
 consumer_index = spain_consumer_index\
     .filter(col('month') == 12)\
+    .filter(col('year') >= 2005)\
     .sort(col('year'))\
     .toPandas()
 
 display(consumer_index)
 
+plt.figure(figsize=(15, 5))
 plt.plot(consumer_index.year, consumer_index.value, label='Consumer Index')
 plt.xlabel("Year") 
 plt.ylabel("Consumer Index") 
