@@ -8,6 +8,7 @@
 # MAGIC - [Preu Mitjá de lloguer](https://www.amb.cat/en/web/area-metropolitana/dades-obertes/cataleg/detall/-/dataset/preu-mitja-de-lloguer/6737819/11692?_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_pageNum=1&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_categoria=habitatge&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_detailBackURL=https%3A%2F%2Fwww.amb.cat%2Fen%2Fweb%2Farea-metropolitana%2Fdades-obertes%2Fcataleg%2Fllistat): Annual evolution of the average monthly rental price in the municipalities of the AMB
 # MAGIC - [Habitatges iniciats](https://www.amb.cat/web/area-metropolitana/dades-obertes/cataleg/detall/-/dataset/habitatges-iniciats/6701983/11692?_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_pageNum=1&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_queryText=obra&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_categoria=habitatge&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_detailBackURL=https%3A%2F%2Fwww.amb.cat%2Fen%2Fweb%2Farea-metropolitana%2Fdades-obertes%2Fcataleg%2Fllistat): Homes with work visas from the College of Apparatus and Technical Architects of Catalonia.
 # MAGIC - [Habitatges acabats](https://www.amb.cat/en/web/area-metropolitana/dades-obertes/cataleg/detall/-/dataset/habitatges-acabats/1061026/11692?_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_pageNum=1&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_queryText=obra&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_categoria=habitatge&_DatasetSearchListPortlet_WAR_AMBSearchPortletportlet_detailBackURL=https%3A%2F%2Fwww.amb.cat%2Fen%2Fweb%2Farea-metropolitana%2Fdades-obertes%2Fcataleg%2Fllistat): Data on the evolution of the number of homes completed in the AMB.
+# MAGIC - [Consumer Index](https://servicios.ine.es/wstempus/js/EN/DATOS_SERIE/IPC206448?nult=384): Spain Consumer Indexes that means the inflation rate
 
 # COMMAND ----------
 
@@ -60,10 +61,10 @@ def load_json(url):
 
 def create_rent_values_dataframe(data):
     schema = StructType([
-        StructField('outer_scope', StringType(), True),
-        StructField('inner_scope', StringType(), True),
+        StructField('area', StringType(), True),
+        StructField('sub_area', StringType(), True),
         StructField('year', StringType(), True),
-        StructField('trimester', StringType(), True),
+        StructField('quarter', StringType(), True),
         StructField('amount', StringType(), True),
     ])
     return spark.createDataFrame(data['valors'], schema=schema)
@@ -108,10 +109,10 @@ display(barcelona_neighborhoods)
 
 def create_homes_started_dataframe(data):
     schema = StructType([
-        StructField('outer_scope', StringType(), True),
-        StructField('inner_scope', StringType(), True),
+        StructField('area', StringType(), True),
+        StructField('sub_area', StringType(), True),
         StructField('year', StringType(), True),
-        StructField('trimester', StringType(), True),
+        StructField('quarter', StringType(), True),
         StructField('quantity', StringType(), True),
     ])
     return spark.createDataFrame(data['valors'], schema=schema)
@@ -131,10 +132,10 @@ display(homes_started)
 
 def create_homes_finished_dataframe(data):
     schema = StructType([
-        StructField('outer_scope', StringType(), True),
-        StructField('inner_scope', StringType(), True),
+        StructField('area', StringType(), True),
+        StructField('sub_area', StringType(), True),
         StructField('year', StringType(), True),
-        StructField('trimester', StringType(), True),
+        StructField('quarter', StringType(), True),
         StructField('quantity', StringType(), True),
     ])
     return spark.createDataFrame(data['valors'], schema=schema)
