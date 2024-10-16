@@ -7,6 +7,10 @@ Since the 1992 Olympic Games, Barcelona has transformed into one of the most vis
 Today, one of the most pressing concerns for residents is the skyrocketing rent prices.
 While tourism is often cited as the primary factor driving up rent costs, our analysis aims to explore the correlation between the number of new households and the rise in rental prices. As residents of the city, we are particularly interested in understanding the local dynamics that shape the current rent market.
 
+- **Question 1**: Is Barcelona building more or less houses?
+- **Question 2**: Are there any relationship between the amount of houses built and the rent price?
+- **Question 3**: Are rent values following inflation rate?
+
 ## Running it
 
 Run the notebooks in this order:

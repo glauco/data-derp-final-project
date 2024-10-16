@@ -180,7 +180,7 @@ homes_finished_filtered_by_common_years.quantity.corr(rental_prices.amount)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Question 3: Are rent values following inflation rate?
+# MAGIC ### Question 3: Are rent values following inflation rate?
 
 # COMMAND ----------
 
