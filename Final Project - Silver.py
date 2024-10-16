@@ -60,17 +60,19 @@ display(spain_consumer_index)
 
 # COMMAND ----------
 
-# "105" is the code for cities in Catalonia
-# "8019" is the code for Barcelona
+CATALONIA_CITIES_CODE = '105'
+BARCELONA_CITY_CODE = '8019'
+ANNUAL_INTERVAL = '-1'
+
 def create_barcelona_avg_monthly_rental_prices(average_monthly_rental_prices):
     return average_monthly_rental_prices\
-        .filter(col('outer_scope') == '105')\
-        .filter(col('inner_scope') == '8019')\
-        .filter(col('trimester') == '-1')\
+        .filter(col('area') == CATALONIA_CITIES_CODE)\
+        .filter(col('sub_area') == BARCELONA_CITY_CODE)\
+        .filter(col('quarter') == ANNUAL_INTERVAL)\
         .withColumn('year', col('year').cast('int'))\
         .withColumn('amount', col('amount').cast('double'))\
-        .withColumnRenamed('name', 'neighborhood')\
-        .drop('outer_scope', 'inner_scope', 'trimester')
+        .drop('area', 'sub_area', 'quarter')\
+        .sort('year')
 
 barcelona_avg_monthly_rental_prices = create_barcelona_avg_monthly_rental_prices(average_monthly_rental_prices)
 display(barcelona_avg_monthly_rental_prices)
@@ -82,23 +84,23 @@ display(barcelona_avg_monthly_rental_prices)
 
 # COMMAND ----------
 
-# "105" is the code for cities in Catalonia
-# "8019" is the code for Barcelona
+
 def create_barcelona_homes_dataset(dataset):
     homes_in_barcelona = dataset\
-        .filter(col('outer_scope') == '105')\
-        .filter(col('inner_scope') == '8019')\
+        .filter(col('area') == CATALONIA_CITIES_CODE)\
+        .filter(col('sub_area') == BARCELONA_CITY_CODE)\
         .withColumn('year', col('year').cast('int'))\
         .withColumn('quantity', col('quantity').cast('int'))
 
     existing_yearly_agg_entries = homes_in_barcelona\
-        .filter(col('trimester') == '-1')\
-        .drop('outer_scope', 'inner_scope', 'trimester')
+        .filter(col('quarter') == ANNUAL_INTERVAL)\
+        .drop('area', 'sub_area', 'quarter')
 
-    trimester_agg_entries = homes_in_barcelona\
-        .filter(col('trimester') != '-1')
+    # There are some Years in the dataset that doesnt have a record with ANNUAL_INTERVAL (-1), so we calculate that record based on the quarters
+    quarter_agg_entries = homes_in_barcelona\
+        .filter(col('quarter') != ANNUAL_INTERVAL)
     
-    computed_yearly_agg_entries = trimester_agg_entries\
+    computed_yearly_agg_entries = quarter_agg_entries\
         .groupBy('year')\
         .agg(sum('quantity').alias('quantity'))
 
@@ -109,10 +111,8 @@ def create_barcelona_homes_dataset(dataset):
 
 # COMMAND ----------
 
-def create_barcelona_homes_started(homes_started):
-    return create_barcelona_homes_dataset(homes_started)
 
-barcelona_homes_started = create_barcelona_homes_started(homes_started)
+barcelona_homes_started = create_barcelona_homes_dataset(homes_started)
 display(barcelona_homes_started)
 
 # COMMAND ----------
@@ -122,12 +122,8 @@ display(barcelona_homes_started)
 
 # COMMAND ----------
 
-# "105" is the code for cities in Catalonia
-# "8019" is the code for Barcelona
-def create_barcelona_homes_finished(homes_finished):
-    return create_barcelona_homes_dataset(homes_finished)
 
-barcelona_homes_finished = create_barcelona_homes_finished(homes_finished)
+barcelona_homes_finished = create_barcelona_homes_dataset(homes_finished)
 display(barcelona_homes_finished)
 
 # COMMAND ----------
@@ -170,3 +166,7 @@ write('spain_consumer_index', spain_consumer_index)
 # COMMAND ----------
 
 dbutils.fs.ls(f"{working_directory}/output/")
+
+# COMMAND ----------
+
+
