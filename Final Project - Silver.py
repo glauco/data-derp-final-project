@@ -166,7 +166,3 @@ write('spain_consumer_index', spain_consumer_index)
 # COMMAND ----------
 
 dbutils.fs.ls(f"{working_directory}/output/")
-
-# COMMAND ----------
-
-
